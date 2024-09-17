@@ -5,5 +5,5 @@ Grupo:
 André Bressan,
 Leila dos Anjos,
 Mateus Ferrari,
-Cícero Marçal
+Cícero Marçal,
 Giovanna Tonelli
