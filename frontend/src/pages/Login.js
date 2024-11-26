@@ -1,22 +1,23 @@
-// src/pages/Login.js
 import React, { useState } from "react";
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-  Paper,
-} from "@mui/material";
+import { Container, Typography, TextField, Button, Box, Paper } from "@mui/material";
+import { useAuth } from "../context/AuthContext";
+
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleLogin = () => {
-    //autenticação
-    console.log("Email:", email, "Senha:", password);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(credentials.email, credentials.password);
   };
 
   return (
@@ -24,51 +25,38 @@ const Login = () => {
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Box textAlign="center" marginBottom={2}>
           <Typography variant="h4" gutterBottom>
-            Bem-vindo!
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Faça login para continuar
+            Login
           </Typography>
         </Box>
 
-        <Box component="form" noValidate autoComplete="off">
+        <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
             label="E-mail"
+            name="email"
             type="email"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleChange}
           />
           <TextField
             label="Senha"
+            name="password"
             type="password"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChange}
           />
-        </Box>
-
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          onClick={handleLogin}
-        >
-          Entrar
-        </Button>
-
-        <Box textAlign="center" marginTop={2}>
-          <Typography variant="body2">
-            Ainda não tem uma conta?{" "}
-            <Link href="/signup" underline="hover">
-              Cadastre-se
-            </Link>
-          </Typography>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: 2 }}
+          >
+            Entrar
+          </Button>
         </Box>
       </Paper>
     </Container>

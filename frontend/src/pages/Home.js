@@ -1,11 +1,11 @@
 import React from "react";
 import { Box, Container, Typography, Button, Grid } from "@mui/material";
 import DestinationCard from "../components/DestinationCard";
-import backgroundImage from '../images/download.jpeg';
+// import backgroundImage from '../images/download.jpeg';
 import sea from '../images/sea.jpg';
 import trip from '../images/trip.jpg';
 import sf from '../images/sanFrancisco.jpg';
-import clouds from '../images/clouds.jpg';
+// import clouds from '../images/clouds.jpg';
 
 const Home = () => {
   const destinations = [
