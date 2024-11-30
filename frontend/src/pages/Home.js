@@ -7,7 +7,7 @@ import trip from '../images/trip.jpg';
 import sf from '../images/sanFrancisco.jpg';
 // import clouds from '../images/clouds.jpg';
 
-const Home = () => {
+const Main = () => {
   const destinations = [
     {
       title: "Caribe",
@@ -28,7 +28,6 @@ const Home = () => {
 
   return (
     <div>
-      {/* Banner */}
       <Box
         sx={{
           textAlign: "center",
@@ -91,4 +90,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Main;
