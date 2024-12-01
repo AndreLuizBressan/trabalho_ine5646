@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'users'
+    'users',
+    'authentication'
 ]
 
 AUTH_USER_MODEL = 'users.User'
