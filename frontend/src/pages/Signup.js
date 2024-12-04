@@ -1,28 +1,36 @@
 import React, { useState } from "react";
-import { Container, Typography, TextField, Button, Box, Paper } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
+import { Container, Typography, TextField, Button, Box, Paper, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-  });
+const Signup = () => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); 
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (confirmPassword && e.target.value !== confirmPassword) {
+      setError("As senhas não coincidem");
+    } else {
+      setError("");
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (password && e.target.value !== password) {
+      setError("As senhas não coincidem");
+    } else {
+      setError("");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const success = login(credentials.email, credentials.password);
-    if (success) {
-      navigate("/main");
-    } else {
-      alert("Credenciais inválidas.");
+    if (!error && password && confirmPassword) {
+      alert("Conta criada com sucesso");
+      navigate("/home");
     }
   };
 
@@ -31,28 +39,60 @@ const Login = () => {
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Box textAlign="center" marginBottom={2}>
           <Typography variant="h4" gutterBottom>
-            Login
+            Crie sua Conta
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Para criar roteiros incríveis, preencha o formulário a seguir com as informações corretas.
           </Typography>
         </Box>
-
         <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <Box sx={{ display: 'flex', gap: 2, margin: 'normal' }}>
+            <TextField
+              label="Nome"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+            />
+            <TextField
+              label="Sobrenome"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+            />
+          </Box>
+
           <TextField
             label="E-mail"
-            name="email"
             type="email"
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={handleChange}
+            required
           />
+
           <TextField
             label="Senha"
-            name="password"
             type="password"
             variant="outlined"
             fullWidth
             margin="normal"
-            onChange={handleChange}
+            required
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <TextField
+            label="Confirmar senha"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            error={!!error}
+            helperText={error}
           />
           <Button
             type="submit"
@@ -60,13 +100,22 @@ const Login = () => {
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
+            disabled={!!error || !password || !confirmPassword}
           >
-            Entrar
+            Cadastre-se
           </Button>
-        </Box>
+          </Box>
+          <Box textAlign="center" sx={{ marginTop: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Você já tem uma conta?{" "}
+              <Link href="/login" underline="hover">
+                Faça login
+              </Link>
+            </Typography>
+         </Box>
       </Paper>
     </Container>
   );
 };
 
-export default Login;
+export default Signup;
