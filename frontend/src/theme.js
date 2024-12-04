@@ -1,7 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 import "@fontsource/quicksand";
 
-
 const theme = createTheme({
   palette: {
     primary: {
@@ -14,8 +13,8 @@ const theme = createTheme({
       default: "#FFF8F2",
     },
     text: {
-      primary: "#444444", //texto escuro
-      secondary: "#B39DDB", //roxinho
+      primary: "#444444", // texto escuro
+      secondary: "#B39DDB", // roxinho
     },
   },
   typography: {
@@ -31,6 +30,18 @@ const theme = createTheme({
     body1: {
       fontSize: "1rem",
       color: "#555555",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          transition: "transform 0.3s ease",  // Suaviza o efeito de transformação
+          "&:hover": {
+            transform: "scale(1.1)",  // Aumenta o botão em 10% ao passar o mouse
+          },
+        },
+      },
     },
   },
 });
