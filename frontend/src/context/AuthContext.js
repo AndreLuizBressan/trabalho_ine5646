@@ -1,40 +1,26 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-//auth com localstorage
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("user")
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const register = (name, email, password) => {
-    const user = { name, email, password };
-    localStorage.setItem("user", JSON.stringify(user));
-    alert("Cadastro realizado");
-  };
-
-  const login = (email, password) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user && user.email === email && user.password === password) {
+  const login = (token) => {
     setIsAuthenticated(true);
-    return true; 
-  }
-  return false;
- };
+    localStorage.setItem("authToken", token);
+  };
 
   const logout = () => {
     setIsAuthenticated(false);
-    alert("Você saiu do sistema.");
+    localStorage.removeItem("authToken");
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, register, login, logout }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
+

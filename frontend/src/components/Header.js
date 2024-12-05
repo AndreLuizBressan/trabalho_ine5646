@@ -8,8 +8,10 @@ import { AppBar,
          IconButton } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+  const { isAuthenticated } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -29,9 +31,11 @@ const Header = () => {
         <Button color="inherit" component={Link} to="/">
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/main">
-          Meus Roteiros
-        </Button>
+        {isAuthenticated && (
+          <Button color="inherit" component={Link} to="/main">
+            Meus Roteiros
+          </Button>
+        )}
         <div>
           <IconButton
               color="inherit"

@@ -34,6 +34,7 @@ const Login = () => {
 
       const data = await response.json();
       console.log("Login realizado:", data);
+      login(data.token);
       alert("Login realizado com sucesso!");
       navigate("/main");
     } catch (err) {
