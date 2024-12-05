@@ -10,7 +10,7 @@ import {
   Button,
 } from "@mui/material";
 
-const ItineraryTable = ({ destinations, onRemoveDestination }) => {
+const ItineraryTable = ({ destinations, onRemoveDestination, onEditDestination }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -20,7 +20,7 @@ const ItineraryTable = ({ destinations, onRemoveDestination }) => {
             <TableCell>Destino</TableCell>
             <TableCell>Hospedagem</TableCell>
             <TableCell>Atividades</TableCell>
-            <TableCell>Remover</TableCell>
+            <TableCell align="center">Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -30,7 +30,14 @@ const ItineraryTable = ({ destinations, onRemoveDestination }) => {
               <TableCell>{destination.destination}</TableCell>
               <TableCell>{destination.accommodation}</TableCell>
               <TableCell>{destination.activities}</TableCell>
-              <TableCell>
+              <TableCell align="center">
+                <Button
+                  color="inherit" // Cor cinza
+                  onClick={() => onEditDestination(index)}
+                  sx={{ mr: 1 }}
+                >
+                  Editar
+                </Button>
                 <Button
                   color="error"
                   onClick={() => onRemoveDestination(index)}
