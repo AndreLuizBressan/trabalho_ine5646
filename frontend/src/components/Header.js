@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component={Link} to="/home" sx={{ flexGrow: 1, textDecoration: "none", color: "inherit" }}>
           Roteiros Incríveis
         </Typography>
         <Button color="inherit" component={Link} to="/">

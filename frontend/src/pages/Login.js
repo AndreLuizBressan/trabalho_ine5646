@@ -20,19 +20,29 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const success = await login(credentials.email, credentials.password);
-      if (success) {
-        navigate("/main");
-      } else {
-        setError("E-mail ou senha inválidos.");
+      const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/authentication/token/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        throw new Error("E-mail ou senha inválidos.");
       }
+
+      const data = await response.json();
+      console.log("Login realizado:", data);
+      alert("Login realizado com sucesso!");
+      navigate("/main");
     } catch (err) {
-      setError("Erro ao realizar login. Tente novamente.");
+      setError(err.message || "Erro ao realizar login. Tente novamente.");
     }
   };
 
   return (
-    <Container maxWidth="sm">
+      <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
         <Box textAlign="center" marginBottom={2}>
           <Typography variant="h4" gutterBottom>
@@ -47,6 +57,8 @@ const Login = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            required
+            value={credentials.email}
             onChange={handleChange}
             error={!!error}
           />
@@ -57,6 +69,8 @@ const Login = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            required
+            value={credentials.password}
             onChange={handleChange}
             error={!!error}
           />
