@@ -3,36 +3,64 @@ import { Container, Typography, TextField, Button, Box, Paper, Link } from "@mui
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    // lastName: "",
+    email: "",
+    password: "",
+  });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    if (confirmPassword && e.target.value !== confirmPassword) {
-      setError("As senhas não coincidem");
-    } else {
-      setError("");
-    }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedFormData = { ...prev, [name]: value };
+      console.log("Atualização do formulário:", updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-    if (password && e.target.value !== password) {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    if (formData.password && value !== formData.password) {
       setError("As senhas não coincidem");
     } else {
       setError("");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!error && password && confirmPassword) {
-      alert("Conta criada com sucesso");
-      navigate("/home");
+    if (!error && formData.password && confirmPassword) {
+      try {
+        console.log("JSON enviado para o backend:", JSON.stringify(formData));
+        const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/users/register/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        console.log("formData",formData)
+        if (!response.ok) {
+          throw new Error("Erro ao cadastrar. Tente novamente.");
+        }
+
+        const data = await response.json();
+        alert("Conta criada com sucesso!");
+        navigate("/main");
+      } catch (err) {
+        console.error(err.message);
+        alert("Erro ao cadastrar: " + err.message);
+      }
     }
   };
+    
+
 
   return (
     <Container maxWidth="sm">
@@ -53,14 +81,20 @@ const Signup = () => {
               margin="normal"
               fullWidth
               required
+              name="name"
+              value={formData.firstName}
+              onChange={handleChange}
             />
-            <TextField
+            {/* <TextField
               label="Sobrenome"
               variant="outlined"
               margin="normal"
               fullWidth
               required
-            />
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+            /> */}
           </Box>
 
           <TextField
@@ -70,6 +104,9 @@ const Signup = () => {
             fullWidth
             margin="normal"
             required
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
           />
 
           <TextField
@@ -79,8 +116,10 @@ const Signup = () => {
             fullWidth
             margin="normal"
             required
-            value={password}
-            onChange={handlePasswordChange}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+
           />
           <TextField
             label="Confirmar senha"
@@ -94,13 +133,14 @@ const Signup = () => {
             error={!!error}
             helperText={error}
           />
+          
           <Button
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
-            disabled={!!error || !password || !confirmPassword}
+            disabled={!!error || !formData.password || !confirmPassword}
           >
             Cadastre-se
           </Button>
