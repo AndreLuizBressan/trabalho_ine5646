@@ -36,6 +36,7 @@ const Header = () => {
             Meus Roteiros
           </Button>
         )}
+         {!isAuthenticated && (
         <div>
           <IconButton
               color="inherit"
@@ -68,6 +69,7 @@ const Header = () => {
             </MenuItem>
           </Menu>
         </div>
+        )}
       </Toolbar>
     </AppBar>
   );
