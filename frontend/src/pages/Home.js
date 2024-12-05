@@ -1,13 +1,18 @@
 import React from "react";
 import { Box, Container, Typography, Button, Grid } from "@mui/material";
 import DestinationCard from "../components/DestinationCard";
-// import backgroundImage from '../images/download.jpeg';
 import sea from '../images/sea.jpg';
 import trip from '../images/trip.jpg';
 import sf from '../images/sanFrancisco.jpg';
-// import clouds from '../images/clouds.jpg';
+import { useNavigate } from "react-router-dom"; // Importar o hook useNavigate
 
 const Main = () => {
+  const navigate = useNavigate(); // Inicializando o hook de navegação
+
+  const handleClick = () => {
+    navigate("/signup"); // Redireciona para a página de cadastro
+  };
+
   const destinations = [
     {
       title: "Caribe",
@@ -17,7 +22,7 @@ const Main = () => {
     {
       title: "Costa Rica",
       image: trip,
-      description: "Praias deslumbrantes e narureza rica.",
+      description: "Praias deslumbrantes e natureza rica.",
     },
     {
       title: "USA",
@@ -32,7 +37,6 @@ const Main = () => {
         sx={{
           textAlign: "center",
           py: 8,
-          // backgroundImage: `url(${clouds})`,
           backgroundColor: "text.secondary",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -43,10 +47,15 @@ const Main = () => {
           Explore o Mundo com Roteiros Incríveis
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Descubra os melhores destinos e crie memórias para a vida.
+          Descubra os melhores destinos e crie memórias para a vida!
         </Typography>
-        <Button variant="contained" color="secondary" size="large">
-          Descubra Mais
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          size="large" 
+          onClick={handleClick} // Chama a função de navegação ao clicar
+        >
+          Cadastre-se e descubra o mundo ✈️
         </Button>
       </Box>
 
