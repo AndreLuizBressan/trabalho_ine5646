@@ -17,5 +17,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('users/', include('users.urls')),
-    path('authentication/', include('authentication.urls'))
+    path('authentication/', include('authentication.urls')),
+    path('travel_itinerary/', include('travel_itinerary.urls'))
 ]

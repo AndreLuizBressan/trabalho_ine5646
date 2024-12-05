@@ -5,12 +5,13 @@ from users.serializers import UserValidationSerializer, UserInfoSerializer
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 class RegisterUserView(APIView):
 
+    permission_classes = [AllowAny]
     serializer_class = UserValidationSerializer
 
     def post(self, request):
@@ -29,7 +30,6 @@ class RegisterUserView(APIView):
 
 class UserInfoView(APIView, ExtractUserIdMixin):
 
-    permission_classes = (IsAuthenticated,)
     serializer_class = UserInfoSerializer
 
     def get(self, request):
