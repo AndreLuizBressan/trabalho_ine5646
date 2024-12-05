@@ -13,6 +13,7 @@ const CreateItinerary = () => {
     startDate: null,
     endDate: null,
     destinations: [],
+    day: "", // Mantém o dia selecionado pelo usuário
   });
   const [destinations, setDestinations] = useState([]);
   const [newDestination, setNewDestination] = useState({
@@ -38,15 +39,13 @@ const CreateItinerary = () => {
 
   const daysBetween = calculateDays();
 
-  // Limitar o número de destinos com base na quantidade de dias
+  // Atualiza o novo destino quando o dia selecionado muda
   useEffect(() => {
-    if (daysBetween !== null && daysBetween > 0) {
-      setNewDestination((prev) => ({
-        ...prev,
-        day: 1, // Começar o preenchimento com o primeiro dia
-      }));
-    }
-  }, [daysBetween]);
+    setNewDestination((prev) => ({
+      ...prev,
+      day: newItinerary.day || "", // Preenche com o dia selecionado no DatePickerComp
+    }));
+  }, [newItinerary.day]);
 
   const handleAddDestination = () => {
     if (newDestination.day && newDestination.destination) {
@@ -90,6 +89,10 @@ const CreateItinerary = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1); // Voltar para a página anterior
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Box
@@ -98,8 +101,24 @@ const CreateItinerary = () => {
           p: 4,
           boxShadow: 2,
           borderRadius: 2,
+          position: "relative", // Para posicionar o botão no canto superior direito
         }}
       >
+        {/* Botão Voltar no canto superior direito */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleBack}
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 10, // Para garantir que fique acima de outros elementos
+          }}
+        >
+          Voltar
+        </Button>
+
         <Typography variant="h4" gutterBottom>
           Criar Novo Roteiro
         </Typography>
@@ -149,10 +168,9 @@ const CreateItinerary = () => {
           <TextField
             label="Dia"
             value={newDestination.day}
-            onChange={(e) => setNewDestination((prev) => ({ ...prev, day: e.target.value }))}
-            halfWidth
+            fullWidth
             sx={{ mb: 2 }}
-            disabled // Desabilita para impedir alteração manual
+            disabled
           />
           <TextField
             label="Destino"
