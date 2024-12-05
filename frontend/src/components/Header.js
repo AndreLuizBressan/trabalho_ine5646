@@ -36,6 +36,11 @@ const Header = () => {
             Meus Roteiros
           </Button>
         )}
+        {isAuthenticated && (
+          <Button color="inherit" component={Link} to="/signupupdate">
+            Atualizar cadastro
+          </Button>
+        )}
          {!isAuthenticated && (
         <div>
           <IconButton

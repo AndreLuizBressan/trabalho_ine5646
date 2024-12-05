@@ -10,6 +10,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ItineraryProvider } from "./context/ItineraryContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Main from "./pages/Main";
+import SignupUpdate from "./pages/SignUpUpdate";
 import CreateItinerary from "./pages/CreateItinerary";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/signupupdate" element={<SignupUpdate />} />
                     <Route path="/login" element={<Login />} />
                     <Route
                         path="/main"
