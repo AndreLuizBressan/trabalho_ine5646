@@ -142,7 +142,7 @@ GitHub.sublime-settings
 !.vscode/extensions.json
 .history
 
-#front
+# gitIgnore Front-end
 /node_modules dependencies
 /node_modules
 /.pnp
