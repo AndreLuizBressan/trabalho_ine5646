@@ -9,9 +9,10 @@ import { AppBar,
 import { AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const Header = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -20,6 +21,11 @@ const Header = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
   };
 
   return (
@@ -40,6 +46,20 @@ const Header = () => {
           <Button color="inherit" component={Link} to="/signupupdate">
             Atualizar cadastro
           </Button>
+        )}
+        {isAuthenticated && (
+          <div>
+          <IconButton
+              color="inherit"
+              onClick={handleLogout}
+              component={Link} to="/home"
+            >
+              <ExitToAppIcon />
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  Sair
+                </Typography>
+            </IconButton>
+        </div>
         )}
          {!isAuthenticated && (
         <div>
