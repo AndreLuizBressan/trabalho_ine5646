@@ -28,3 +28,18 @@ class UserValidationSerializer(serializers.Serializer):
 class UserInfoSerializer(serializers.Serializer):
     email = serializers.EmailField()
     name = serializers.CharField(required=True)
+
+class UserUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False, min_length=3)
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
+
+    def update_user(self, user, validated_data):
+        """
+        Atualiza o usuário com os dados validados.
+        """
+        if 'name' in validated_data:
+            user.name = validated_data['name']
+        if 'password' in validated_data:
+            user.set_password(validated_data['password'])  # Encripta a senha
+        user.save()
+        return user
