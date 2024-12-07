@@ -24,6 +24,11 @@ const CreateItinerary = () => {
     activities: "",
   });
 
+  const [lastDestination, setLastDestination] = useState({
+    destination: "",
+    accommodation: "",
+  });
+
   const [usedDays, setUsedDays] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [error, setError] = useState("");
@@ -53,6 +58,17 @@ const CreateItinerary = () => {
     }));
   }, [newItinerary.day]);
 
+  useEffect(() => {
+    if (newItinerary.day && !editIndex) {
+      setNewDestination((prev) => ({
+        ...prev,
+        day: newItinerary.day,
+        destination: lastDestination.destination,
+        accommodation: lastDestination.accommodation,
+      }));
+    }
+  }, [newItinerary.day]);
+
   const handleAddDestination = () => {
     if (newDestination.day && newDestination.destination) {
       if (editIndex !== null) {
@@ -69,6 +85,11 @@ const CreateItinerary = () => {
       if (!usedDays.includes(newDestination.day)) {
         setUsedDays((prev) => [...prev, newDestination.day]);
       }
+
+      setLastDestination({
+        destination: newDestination.destination,
+        accommodation: newDestination.accommodation,
+      });
 
       setNewDestination({
         day: "",
@@ -102,7 +123,7 @@ const CreateItinerary = () => {
     ) {
       setPartOneCompleted(true);
     } else {
-      alert("Preencha todos os campos da Parte 1");
+      alert("Preencha todos os campos");
     }
   };
 
