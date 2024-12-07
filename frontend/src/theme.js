@@ -4,17 +4,17 @@ import "@fontsource/quicksand";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FFB6C1",
+      main: "#FFFFF",
     },
     secondary: {
-      main: "#FFDEE9",
+      main: "#0047AB",
     },
     background: {
       default: "#FFF8F2",
     },
     text: {
-      primary: "#444444", // texto escuro
-      secondary: "#B39DDB", // roxinho
+      primary: "#0047AB", // texto azul
+      secondary: "#0047AB", // 
     },
   },
   typography: {

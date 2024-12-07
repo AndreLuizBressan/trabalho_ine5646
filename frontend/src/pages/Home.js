@@ -1,99 +1,62 @@
 import React from "react";
-import { Box, Container, Typography, Button, Grid } from "@mui/material";
-import DestinationCard from "../components/DestinationCard";
-import sea from '../images/sea.jpg';
-import trip from '../images/trip.jpg';
-import sf from '../images/sanFrancisco.jpg';
-import { useNavigate } from "react-router-dom"; // Importar o hook useNavigate
-
+import { Box, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // use navigate
+import wallpaper from "../images/wallpaper.jpg";
 const Main = () => {
-  const navigate = useNavigate(); // Inicializando o hook de navegação
+  const navigate = useNavigate(); // inicializa o hook de navegação
 
   const handleClick = () => {
-    navigate("/signup"); // Redireciona para a página de cadastro
+    navigate("/signup"); // redireciona p pág de cadastro
   };
 
-  const destinations = [
-    {
-      title: "Caribe",
-      image: sea,
-      description: "Praias paradisíacas e águas cristalinas.",
-    },
-    {
-      title: "Costa Rica",
-      image: trip,
-      description: "Praias deslumbrantes e natureza rica.",
-    },
-    {
-      title: "USA",
-      image: sf,
-      description: "Modernidade e experiências inesquecíveis.",
-    },
-  ];
-
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh", 
+        backgroundColor: "#ffffff", // branco
+      }}
+    >
+      {/* Imagem como banner */}
+      <Box
+        sx={{
+          height: "60vh",
+          backgroundImage: `url(${wallpaper})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+
+      {/* Box logo abaixo da imagem */}
       <Box
         sx={{
           textAlign: "center",
           py: 8,
-          backgroundColor: "text.secondary",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
+          backgroundColor: "#FAF9F6", 
+          color: "#003366", 
         }}
       >
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Explore o Mundo com Roteiros Incríveis
         </Typography>
         <Typography variant="h6" gutterBottom>
           Descubra os melhores destinos e crie memórias para a vida!
         </Typography>
-        <Button 
-          variant="contained" 
-          color="secondary" 
-          size="large" 
+        <Button
+          variant="contained"
+          color="secondary"
+          size="large"
           onClick={handleClick} // Chama a função de navegação ao clicar
-        >
-          Cadastre-se e descubra o mundo ✈️
-        </Button>
-      </Box>
-
-      <Container sx={{ py: 5 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Destinos Populares
-        </Typography>
-        <Grid container spacing={3} justifyContent="center">
-          {destinations.map((dest, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <DestinationCard
-                title={dest.title}
-                image={dest.image}
-                description={dest.description}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      <Box sx={{ py: 5, textAlign: "center", bgcolor: "#f5f5f5" }}>
-        <Typography variant="h4" gutterBottom>
-          Depoimentos
-        </Typography>
-        <Typography
-          variant="body1"
           sx={{
-            fontStyle: "italic",
-            marginBottom: 1,
-            maxWidth: 600,
-            marginX: "auto",
+            fontSize: '1.2rem', 
+            padding: '16px 32px',
+            minWidth: '250px',
           }}
         >
-          "Foi uma experiência incrível!"
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          - Gisele Bundchen
-        </Typography>
+          Cadastre-se ✈️
+        </Button>
+
       </Box>
     </div>
   );
