@@ -5,8 +5,10 @@ import { useItinerary } from "../context/ItineraryContext";
 import DatePickerComp from "../components/DatePicker";
 import ItineraryTable from "../components/ItineraryTable";
 import { differenceInDays } from "date-fns";
+import { useAuth } from "../context/AuthContext";
 
 const CreateItinerary = () => {
+  const { token } = useAuth();
   const [newItinerary, setNewItinerary] = useState({
     title: "",
     description: "",
@@ -127,14 +129,50 @@ const CreateItinerary = () => {
     }
   };
 
-  const handleSaveFinal = () => {
-    if (newItinerary?.title?.trim() && newItinerary?.description?.trim()) {
-      addItinerary(newItinerary);
-      navigate("/main");
+  const handleSaveFinal = async () => {
+    if (token && newItinerary?.title?.trim() && newItinerary?.description?.trim()) {
+      setLoading(true);
+      const startDateFormatted = newItinerary.startDate.toISOString().split('T')[0];
+      const endDateFormatted = newItinerary.endDate.toISOString().split('T')[0];
+
+      try {
+        const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: newItinerary.title,
+            description: newItinerary.description,
+            start_date: startDateFormatted,
+            end_date: endDateFormatted,
+          }),
+        });
+        console.log({
+          title: newItinerary.title,
+          description: newItinerary.description,
+          start_date: startDateFormatted,
+          end_date: endDateFormatted,
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao criar o itinerário.");
+        }
+
+        const data = await response.json();
+        console.log("Itinerário criado com sucesso:", data);
+        navigate("/main");
+      } catch (err) {
+        setError(err.message || "Erro ao criar itinerário. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
     } else {
-      alert("Preencha todos os campos");
+      alert("Preencha todos os campos ou faça login.");
     }
   };
+
 
   const handleBack = () => {
     navigate(-1);
@@ -153,7 +191,8 @@ const CreateItinerary = () => {
           borderRadius: 2,
           position: "relative",
         }}
-      >
+      > 
+
         <Button
           variant="contained"
           color="secondary"
@@ -183,18 +222,20 @@ const CreateItinerary = () => {
         <TextField
           variant="outlined"
           fullWidth
+          name="title"
           value={newItinerary.title}
           onChange={(e) =>
             setNewItinerary((prev) => ({ ...prev, title: e.target.value }))
           }
           sx={{ mb: 3 }}
-        />
+/>
 
         <Typography variant="body2" sx={{ mb: 1 }}>Descrição da viagem</Typography>
         <TextField
           variant="outlined"
           fullWidth
           multiline
+          name="description"
           rows={3}
           value={newItinerary.description}
           onChange={(e) =>
