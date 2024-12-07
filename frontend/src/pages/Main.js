@@ -1,13 +1,32 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Box, Container, Typography, Button, Grid, Paper, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useItinerary } from "../context/ItineraryContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ItineraryModal from "../components/ItineraryModal";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Main = () => {
   const navigate = useNavigate();
-  const { itineraries, deleteItinerary } = useItinerary();
+  const { itineraries, searchItineraries, deleteItinerary } = useItinerary();
 
+  // modal
+  const [selectedItinerary, setSelectedItinerary] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    searchItineraries();
+  }, [searchItineraries]);
+
+  const handleOpenModal = (itinerary) => {
+    setSelectedItinerary(itinerary);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedItinerary(null);
+    setModalOpen(false);
+  };
   return (
     <Box sx={{ bgcolor: "#f9f9f9", minHeight: "100vh" }}>
       <Box
@@ -31,6 +50,8 @@ const Main = () => {
         >
           Criar Novo Roteiro
         </Button>
+
+
         {itineraries.length === 0 ? (
           <Typography variant="h6" color="textSecondary">
             Não há roteiros criados ainda. Comece criando um novo!
@@ -61,6 +82,12 @@ const Main = () => {
                      {item.description || "Sem descrição"}
                   </Typography>
                   <Box mt={2} display="flex" justifyContent="flex-end">
+                  <IconButton
+                      color="primary"
+                      onClick={() => handleOpenModal(item)}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
                     <IconButton
                       color="error"
                       onClick={() => deleteItinerary(item.id)}
@@ -74,6 +101,13 @@ const Main = () => {
           </Grid>
         )}
       </Container>
+
+      <ItineraryModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        itinerary={selectedItinerary}
+      />
+      
     </Box>
   );
 };
