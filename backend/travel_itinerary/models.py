@@ -1,10 +1,9 @@
-from users.mixins import ExtractUserIdMixin
 from users.models import User
 
 from django.db import models
 from django.core.validators import MinLengthValidator
 
-class TravelItinerary(models.Model, ExtractUserIdMixin):
+class TravelItinerary(models.Model):
 
     created_at = models.DateTimeField("Created at", auto_now_add=True)
     updated_at = models.DateTimeField("Updated at", auto_now=True)
@@ -16,4 +15,19 @@ class TravelItinerary(models.Model, ExtractUserIdMixin):
         User,
         related_name="itineraries",
         on_delete=models.CASCADE
+    )
+
+class ItineraryItems(models.Model):
+
+    created_at = models.DateTimeField("Created at", auto_now_add=True)
+    updated_at = models.DateTimeField("Updated at", auto_now=True)
+    day = models.IntegerField(null=False, blank=False)
+    destination = models.CharField(max_length=150)
+    accommodation = models.CharField(max_length=150)
+    activities = models.CharField(max_length=150)
+    actions = models.CharField(max_length=150)
+    itinerary = models.ForeignKey(
+        TravelItinerary,
+        related_name="travel_items",
+        on_delete=models.CASCADE,
     )
