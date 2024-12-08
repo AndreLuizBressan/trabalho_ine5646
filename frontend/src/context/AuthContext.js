@@ -1,62 +1,43 @@
-// import React, { createContext, useContext, useState } from "react";
-
-// const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-//   const login = (token) => {
-//     setIsAuthenticated(true);
-//     localStorage.setItem("authToken", token);
-//   };
-
-//   const logout = () => {
-//     setIsAuthenticated(false);
-//     localStorage.removeItem("authToken");
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = () => useContext(AuthContext);
-
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => {
+    const savedToken = localStorage.getItem("authToken");
+    console.log("token do localStorage:", savedToken);
+    return savedToken;
+  });
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    console.log("storedToken", storedToken)
-    localStorage.setItem("authToken", "testeToken");
-    console.log(localStorage.getItem("authToken"));
-    if (storedToken) {
-      setToken(storedToken);
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const [refreshToken, setRefreshToken] = useState(() => {
+    const savedRefreshToken = localStorage.getItem("refreshToken");
+    console.log("refreshToken recuperado do localStorage:", savedRefreshToken);
+    return savedRefreshToken;
+  });
 
-  const login = (newToken) => {
-    setIsAuthenticated(true);
-    setToken(newToken);
-    localStorage.setItem("authToken", newToken);
+  const login = (tokens) => {
+    console.log("login com tokens:", tokens);
+
+    localStorage.setItem("authToken", tokens.access);
+    localStorage.setItem("refreshToken", tokens.refresh);
+    setToken(tokens.access);
+    setRefreshToken(tokens.refresh);
+    
+    console.log("token access e refresh salvos no localStorage");
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    setToken(null);
+    console.log(" fazendo logout"); 
     localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
+    setToken(null);
+    setRefreshToken(null);
+    
+    console.log("tokens removidos do localStorage, estado resetado");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, login, logout }}>
+    <AuthContext.Provider value={{ token, refreshToken, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -17,6 +17,30 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/authentication/token/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(credentials),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("E-mail ou senha inválidos.");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("Login realizado:", data);
+  //     login(data.acess);
+  //     navigate("/main");
+  //   } catch (err) {
+  //     setError(err.message || "Erro ao realizar login. Tente novamente.");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -27,20 +51,27 @@ const Login = () => {
         },
         body: JSON.stringify(credentials),
       });
-
+  
       if (!response.ok) {
         throw new Error("E-mail ou senha inválidos.");
       }
-
+  
       const data = await response.json();
       console.log("Login realizado:", data);
-      login(data.token);
+      
+      if (data.access) {
+        login(data.access);
+        localStorage.setItem("refreshToken", data.refresh); 
+      } else {
+        throw new Error("Erro ao obter o token de acesso.");
+      }
+  
       navigate("/main");
     } catch (err) {
+      console.error(err.message); // Debug: Mostra qualquer erro ocorrido
       setError(err.message || "Erro ao realizar login. Tente novamente.");
     }
   };
-
   return (
       <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>

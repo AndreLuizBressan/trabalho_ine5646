@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { Container, Typography, TextField, Button, Box, Paper, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
-    // lastName: "",
     email: "",
     password: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
+  const { login } = useAuth()
 
 
   const handleChange = (e) => {
@@ -45,13 +46,14 @@ const Signup = () => {
           },
           body: JSON.stringify(formData),
         });
-        console.log("formData",formData)
+
         if (!response.ok) {
           throw new Error("Erro ao cadastrar. Tente novamente.");
         }
 
         const data = await response.json();
-        navigate("/login");
+        login(data);
+        navigate("/main");
       } catch (err) {
         console.error(err.message);
         alert("Erro ao cadastrar: " + err.message);
@@ -82,16 +84,6 @@ const Signup = () => {
               value={formData.firstName}
               onChange={handleChange}
             />
-            {/* <TextField
-              label="Sobrenome"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              required
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-            /> */}
           </Box>
           <TextField
             label="E-mail"

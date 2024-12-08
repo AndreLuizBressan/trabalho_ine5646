@@ -8,7 +8,10 @@ import { differenceInDays } from "date-fns";
 import { useAuth } from "../context/AuthContext";
 
 const CreateItinerary = () => {
-  const { token } = useAuth();
+  // const { token } = useAuth();
+  const { token, logout } = useAuth(); // Hook chamado no início do componente
+  // const { storedToken } = useAuth
+  // const { logout } = useAuth();
   const [newItinerary, setNewItinerary] = useState({
     title: "",
     description: "",
@@ -130,17 +133,28 @@ const CreateItinerary = () => {
   };
 
   const handleSaveFinal = async () => {
-    if (token && newItinerary?.title?.trim() && newItinerary?.description?.trim()) {
-      setLoading(true);
-      const startDateFormatted = newItinerary.startDate.toISOString().split('T')[0];
-      const endDateFormatted = newItinerary.endDate.toISOString().split('T')[0];
-
-      try {
-        const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries", {
+    const authToken = token || localStorage.getItem("authToken");
+  
+    if (!authToken) {
+      alert("Token inválido ou sessão expirada");
+      logout();
+      navigate("/login");
+      return;
+    }
+  
+    setLoading(true);
+  
+    const startDateFormatted = newItinerary.startDate.toISOString().split("T")[0];
+    const endDateFormatted = newItinerary.endDate.toISOString().split("T")[0];
+  
+    try {
+      const response = await fetch(
+        "http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({
             title: newItinerary.title,
@@ -148,31 +162,34 @@ const CreateItinerary = () => {
             start_date: startDateFormatted,
             end_date: endDateFormatted,
           }),
-        });
-        console.log({
-          title: newItinerary.title,
-          description: newItinerary.description,
-          start_date: startDateFormatted,
-          end_date: endDateFormatted,
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro ao criar o itinerário.");
         }
-
-        const data = await response.json();
-        console.log("Itinerário criado com sucesso:", data);
-        navigate("/main");
-      } catch (err) {
-        setError(err.message || "Erro ao criar itinerário. Tente novamente.");
-      } finally {
-        setLoading(false);
+      );
+  
+      if (response.status === 401) {
+        alert("Sessão expirada. Faça login de novo.");
+        logout();
+        navigate("/login");
+        return;
       }
-    } else {
-      alert("Preencha todos os campos ou faça login.");
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Resposta do servidor:", errorText);
+        throw new Error("Erro ao criar o itinerário.");
+      }
+  
+      const data = await response.json();
+      console.log("Itinerário criado com sucesso:", data);
+      navigate("/main");
+    } catch (err) {
+      console.error("Erro:", err);
+      setError(err.message || "Erro ao criar itinerário. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
-
+  
+  
 
   const handleBack = () => {
     navigate(-1);
