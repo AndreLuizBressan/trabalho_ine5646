@@ -25,6 +25,17 @@ class UserValidationSerializer(serializers.Serializer):
         user.save()
         return user
     
+class UserUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(min_length=3, required = False)
+    old_password = serializers.CharField(write_only=True, required = False, min_length=8)
+    new_password = serializers.CharField(write_only=True, required = False, min_length=8)
+
+    def to_internal_value(self, data):
+        for field in data:
+            if field not in self.fields:
+                raise serializers.ValidationError({field: "This field is not allowed."})
+        return super().to_internal_value(data)
+
 class UserInfoSerializer(serializers.Serializer):
     email = serializers.EmailField()
     name = serializers.CharField(required=True)
