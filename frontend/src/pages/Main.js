@@ -1,33 +1,118 @@
-import React, {useState, useEffect} from "react";
-import { Box, Container, Typography, Button, Grid, Paper, IconButton } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Paper,
+  IconButton,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useItinerary } from "../context/ItineraryContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import ItineraryModal from "../components/ItineraryModal";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import { useAuth } from "../context/AuthContext";
 
 const Main = () => {
   const navigate = useNavigate();
-  const { itineraries, searchItineraries, deleteItinerary } = useItinerary();
+  const { deleteItinerary } = useItinerary();
+  const { token, logout } = useAuth();
 
-  // modal
+  const [itineraries, setItineraries] = useState([]); // Inicializado como array vazio
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const searchItineraries = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        "http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Erro no servidor:", errorText);
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Garante que a resposta é um array
+      setItineraries(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Erro ao buscar itinerários:", err);
+      setError(err.message || "Erro ao buscar itinerários. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchItineraryDetails = async (id) => {
+    if (!token) {
+      alert("Token inválido ou sessão expirada");
+      logout();
+      navigate("/login");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Erro ao buscar detalhes do itinerário:", errorText);
+        throw new Error("Erro ao buscar detalhes do itinerário.");
+      }
+
+      const data = await response.json();
+      setSelectedItinerary(data); // Atualiza o modal com o itinerário selecionado
+      setModalOpen(true);
+    } catch (err) {
+      console.error("Erro ao buscar itinerário:", err);
+      setError(err.message || "Erro ao buscar detalhes do itinerário.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     searchItineraries();
-  }, [searchItineraries]);
+  }, []); // Executa ao montar o componente
 
   const handleOpenModal = (itinerary) => {
-    setSelectedItinerary(itinerary);
-    setModalOpen(true);
+    fetchItineraryDetails(itinerary.id);
   };
 
   const handleCloseModal = () => {
     setSelectedItinerary(null);
     setModalOpen(false);
   };
+
   return (
     <Box sx={{ bgcolor: "#f9f9f9", minHeight: "100vh" }}>
       <Box
@@ -35,7 +120,7 @@ const Main = () => {
           textAlign: "center",
           py: 8,
           bgcolor: "cobalto_claro.main",
-          color: "text.white", 
+          color: "text.white",
         }}
       >
         <Typography variant="h3" gutterBottom>
@@ -52,8 +137,15 @@ const Main = () => {
           Criar Novo Roteiro
         </Button>
 
-
-        {itineraries.length === 0 ? (
+        {loading ? (
+          <Typography variant="h6" color="textsecondary">
+            Carregando...
+          </Typography>
+        ) : error ? (
+          <Typography variant="h6" color="error">
+            {error}
+          </Typography>
+        ) : itineraries.length === 0 ? (
           <Typography variant="h6" color="textsecondary">
             Não há roteiros criados ainda. Comece criando um novo!
           </Typography>
@@ -65,7 +157,6 @@ const Main = () => {
                   elevation={4}
                   sx={{
                     p: 4,
-                    width:"100%px",
                     maxWidth: "500px",
                     display: "flex",
                     flexDirection: "column",
@@ -75,15 +166,19 @@ const Main = () => {
                   <Typography variant="h4" gutterBottom>
                     {item.title}
                   </Typography>
-                  <Typography 
-                    variant="h6" 
+                  <Typography
+                    variant="h6"
                     color="textSecondary"
-                    sx={{ flexGrow: 1, overflow: "hidden", textOverflow: "ellipsis" }}
-                    >
-                     {item.description || "Sem descrição"}
+                    sx={{
+                      flexGrow: 1,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.description || "Sem descrição"}
                   </Typography>
                   <Box mt={2} display="flex" justifyContent="flex-end">
-                  <IconButton
+                    <IconButton
                       color="primary"
                       onClick={() => handleOpenModal(item)}
                     >
@@ -108,7 +203,6 @@ const Main = () => {
         onClose={handleCloseModal}
         itinerary={selectedItinerary}
       />
-      
     </Box>
   );
 };
