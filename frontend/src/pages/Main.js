@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ItineraryModal from "../components/ItineraryModal";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+
 const Main = () => {
   const navigate = useNavigate();
   const { itineraries, searchItineraries, deleteItinerary } = useItinerary();
@@ -33,8 +34,8 @@ const Main = () => {
         sx={{
           textAlign: "center",
           py: 8,
-          bgcolor: "#FFB6C1",
-          color: "#FFF",
+          bgcolor: "cobalto_claro.main",
+          color: "text.white", 
         }}
       >
         <Typography variant="h3" gutterBottom>
@@ -53,7 +54,7 @@ const Main = () => {
 
 
         {itineraries.length === 0 ? (
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="h6" color="textsecondary">
             Não há roteiros criados ainda. Comece criando um novo!
           </Typography>
         ) : (

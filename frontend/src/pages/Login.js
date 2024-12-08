@@ -35,7 +35,6 @@ const Login = () => {
       const data = await response.json();
       console.log("Login realizado:", data);
       login(data.token);
-      alert("Login realizado com sucesso!");
       navigate("/main");
     } catch (err) {
       setError(err.message || "Erro ao realizar login. Tente novamente.");
@@ -83,7 +82,7 @@ const Login = () => {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
@@ -93,7 +92,7 @@ const Login = () => {
         <Box textAlign="center" sx={{ marginTop: 2 }}>
           <Typography variant="body2" color="text.secondary">
             Não tem uma conta?{" "}
-            <Link href="/signup" underline="hover">
+            <Link href="/signup" underline="hover" color="text.roxo">
               Cadastre-se
             </Link>
           </Typography>

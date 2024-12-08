@@ -11,6 +11,18 @@ const SignupUpdate = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+
+  const handleConfirmPasswordChange = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    if (formData.password && value !== formData.password) {
+      setError("As senhas não coincidem");
+    } else {
+      setError("");
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -84,7 +96,7 @@ const SignupUpdate = () => {
           <Typography variant="h4" gutterBottom>
             Atualize seu Cadastro
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body1" color="text.secondary">
             Atualize suas informações de cadastro abaixo.
           </Typography>
         </Box>
@@ -110,10 +122,22 @@ const SignupUpdate = () => {
             value={formData.password}
             onChange={handleChange}
           />
+          <TextField
+            label="Confirmar senha"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            error={!!error}
+            helperText={error}
+          />
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             sx={{ marginTop: 2 }}
           >

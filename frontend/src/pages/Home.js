@@ -1,12 +1,13 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // use navigate
+import { useNavigate } from "react-router-dom";
 import wallpaper from "../images/wallpaper.jpg";
+
 const Main = () => {
-  const navigate = useNavigate(); // inicializa o hook de navegação
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signup"); // redireciona p pág de cadastro
+    navigate("/signup");
   };
 
   return (
@@ -14,8 +15,9 @@ const Main = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh", 
-        backgroundColor: "#ffffff", // branco
+        height: "100vh", // Exatamente a altura da tela
+        backgroundColor: "#ffffff",
+        overflow: "hidden", // Evita qualquer rolagem extra
       }}
     >
       {/* Imagem como banner */}
@@ -27,14 +29,13 @@ const Main = () => {
           backgroundPosition: "center",
         }}
       />
-
-      {/* Box logo abaixo da imagem */}
       <Box
         sx={{
           textAlign: "center",
-          py: 8,
-          backgroundColor: "#FAF9F6", 
-          color: "#003366", 
+          py: 6, // Margem interna moderada
+          backgroundColor: "Quinary",
+          color: "#003366",
+          flexGrow: 1, // Ajusta o restante do espaço
         }}
       >
         <Typography variant="h4" gutterBottom>
@@ -47,16 +48,28 @@ const Main = () => {
           variant="contained"
           color="secondary"
           size="large"
-          onClick={handleClick} // Chama a função de navegação ao clicar
+          onClick={handleClick}
           sx={{
-            fontSize: '1.2rem', 
-            padding: '16px 32px',
-            minWidth: '250px',
+            fontSize: "1.2rem",
+            padding: "16px 32px",
+            minWidth: "250px",
           }}
         >
           Cadastre-se ✈️
         </Button>
+      </Box>
 
+      {/* Rodapé fixado no final */}
+      <Box
+        sx={{
+          backgroundColor: "cobalto_claro.main",
+          py: 2,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="body2" color="white">
+          © 2024 Explore o Mundo. Todos os direitos reservados.
+        </Typography>
       </Box>
     </div>
   );

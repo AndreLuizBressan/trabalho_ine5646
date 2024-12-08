@@ -8,21 +8,23 @@ import {
   TableRow,
   Paper,
   Button,
+  Typography
 } from "@mui/material";
+
 
 const ItineraryTable = ({ destinations, onRemoveDestination, onEditDestination }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Dia</TableCell>
-            <TableCell>Destino</TableCell>
-            <TableCell>Hospedagem</TableCell>
-            <TableCell>Atividades</TableCell>
-            <TableCell align="center">Ações</TableCell>
-          </TableRow>
-        </TableHead>
+      <TableHead>
+      <TableRow sx={{ '& > th': { color: 'text.terciary' } }}>
+        <TableCell>Dia</TableCell>
+        <TableCell>Destino</TableCell>
+        <TableCell>Hospedagem</TableCell>
+        <TableCell>Atividades</TableCell>
+        <TableCell align="center">Ações</TableCell>
+      </TableRow>
+      </TableHead>
         <TableBody>
           {destinations.map((destination, index) => (
             <TableRow key={index}>

@@ -248,7 +248,7 @@ const CreateItinerary = () => {
 
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           fullWidth
           onClick={handleSavePart1}
           sx={{ mb: 3 }}
@@ -270,6 +270,7 @@ const CreateItinerary = () => {
                   <Button
                     key={day}
                     variant={newItinerary.day === day ? "contained" : "outlined"}
+                    color="secondary"
                     onClick={() =>
                       setNewItinerary((prev) => ({ ...prev, day }))
                     }
@@ -331,6 +332,7 @@ const CreateItinerary = () => {
 
             <Button
               variant="contained"
+              color="secondary"
               onClick={handleAddDestination}
               sx={{ mb: 3 }}
               disabled={!partOneCompleted}
@@ -350,7 +352,7 @@ const CreateItinerary = () => {
 
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               fullWidth
               onClick={handleSaveFinal}
               disabled={!partOneCompleted || loading}

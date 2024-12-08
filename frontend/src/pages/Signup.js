@@ -51,16 +51,13 @@ const Signup = () => {
         }
 
         const data = await response.json();
-        alert("Conta criada com sucesso!");
-        navigate("/main");
+        navigate("/login");
       } catch (err) {
         console.error(err.message);
         alert("Erro ao cadastrar: " + err.message);
       }
     }
   };
-    
-
 
   return (
     <Container maxWidth="sm">
@@ -96,7 +93,6 @@ const Signup = () => {
               onChange={handleChange}
             /> */}
           </Box>
-
           <TextField
             label="E-mail"
             type="email"
@@ -137,7 +133,7 @@ const Signup = () => {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             sx={{ marginTop: 2 }}
             disabled={!!error || !formData.password || !confirmPassword}
@@ -148,7 +144,7 @@ const Signup = () => {
           <Box textAlign="center" sx={{ marginTop: 2 }}>
             <Typography variant="body2" color="text.secondary">
               Você já tem uma conta?{" "}
-              <Link href="/login" underline="hover">
+              <Link href="/login" underline="hover" color="roxo">
                 Faça login
               </Link>
             </Typography>
