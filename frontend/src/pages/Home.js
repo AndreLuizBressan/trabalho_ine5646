@@ -68,7 +68,7 @@ const Main = () => {
         }}
       >
         <Typography variant="body2" color="white">
-          © 2024 Explore o Mundo. Todos os direitos reservados.
+          © 2024 Roteiros Incríveis. Todos os direitos reservados.
         </Typography>
       </Box>
     </div>
