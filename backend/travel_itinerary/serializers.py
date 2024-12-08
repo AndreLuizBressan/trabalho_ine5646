@@ -1,7 +1,7 @@
-from travel_itinerary.models import TravelItinerary, ItineraryItems
-from rest_framework import serializers
+from travel_itinerary.models import TravelItinerary, ItineraryItems, ItineraryInvites
+from rest_framework.serializers import ModelSerializer, ValidationError
 
-class ItineraryItemsSerializer(serializers.ModelSerializer):
+class ItineraryItemsSerializer(ModelSerializer):
     
     class Meta:
         model = ItineraryItems
@@ -10,13 +10,18 @@ class ItineraryItemsSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         for field in data:
             if field not in self.fields:
-                raise serializers.ValidationError({field: "This field is not allowed."})
+                raise ValidationError({field: "This field is not allowed."})
         return super().to_internal_value(data)
     
-class TravelItinerarySerializer(serializers.ModelSerializer):
+class TravelItinerarySerializer(ModelSerializer):
 
     travel_items = ItineraryItemsSerializer(many=True, read_only = True)
     class Meta:
         model = TravelItinerary
         fields = "__all__"
         read_only_fields = ['owner']
+
+class ItineraryInvitesSerializer(ModelSerializer):
+    class Meta:
+        model = ItineraryInvites
+        fields = "__all__"
