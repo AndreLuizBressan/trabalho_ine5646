@@ -31,3 +31,9 @@ class ItineraryItems(models.Model):
         related_name="travel_items",
         on_delete=models.CASCADE,
     )
+
+class ItineraryInvites(models.Model):
+    created_at = models.DateTimeField("Created at", auto_now_add=True)
+    updated_at = models.DateTimeField("Updated at", auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    itinerary = models.ForeignKey(TravelItinerary, on_delete=models.CASCADE)
