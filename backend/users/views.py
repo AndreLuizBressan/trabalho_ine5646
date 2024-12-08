@@ -5,9 +5,11 @@ from users.serializers import UserValidationSerializer, UserInfoSerializer, User
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 class RegisterUserView(APIView, ExtractUserIdMixin):
 
@@ -57,3 +59,14 @@ class UserInfoView(APIView, ExtractUserIdMixin):
         user = get_object_or_404(User, id=self.user_id)
         serializer = self.serializer_class(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UserByEmailView(GenericViewSet, ListModelMixin):
+    queryset = User.objects.all().order_by("-id")
+    serializer_class = UserInfoSerializer
+
+    def get_queryset(self):
+        search_string = self.request.query_params.get("email")
+        if type(search_string) != str or search_string.strip() == "":
+            return Response({"message": "tour search must not be empty"}, status=status.HTTP_400_BAD_REQUEST)
+        queryset = self.queryset.filter(email__icontains=search_string)
+        return queryset
