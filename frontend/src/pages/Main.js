@@ -90,6 +90,7 @@ const Main = () => {
       }
 
       const data = await response.json();
+      console.log("Dados recebidos do banco:", data);
       setSelectedItinerary(data); // Atualiza o modal com o itinerário selecionado
       setModalOpen(true);
     } catch (err) {
@@ -132,7 +133,7 @@ const Main = () => {
           variant="contained"
           color="secondary"
           onClick={() => navigate("/create")}
-          sx={{ mb: 4 }}
+          sx={{ mb: 4, width: "300px", height: "3 0px", fontSize: "1.2rem" }}
         >
           Criar Novo Roteiro
         </Button>
@@ -157,7 +158,7 @@ const Main = () => {
                   elevation={4}
                   sx={{
                     p: 4,
-                    maxWidth: "500px",
+                    maxWidth: "600px",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "left",
@@ -179,7 +180,7 @@ const Main = () => {
                   </Typography>
                   <Box mt={2} display="flex" justifyContent="flex-end">
                     <IconButton
-                      color="primary"
+                      color="secondary"
                       onClick={() => handleOpenModal(item)}
                     >
                       <VisibilityIcon />

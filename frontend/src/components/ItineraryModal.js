@@ -29,8 +29,8 @@ const ItineraryModal = ({ open, onClose, itinerary }) => {
             Datas
           </Typography>
           <Typography variant="body1">
-            Início: {itinerary.startDate || "N tem"} <br />
-            Fim: {itinerary.endDate || "n tem"}
+            Início: {itinerary.start_date || "N tem"} <br />
+            Fim: {itinerary.end_date || "n tem"}
           </Typography>
         </Box>
         <Box mt={2}>
