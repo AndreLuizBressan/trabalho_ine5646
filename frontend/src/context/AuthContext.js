@@ -1,43 +1,43 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => {
-    const savedToken = localStorage.getItem("authToken");
-    console.log("token do localStorage:", savedToken);
-    return savedToken;
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState(null);
 
-  const [refreshToken, setRefreshToken] = useState(() => {
-    const savedRefreshToken = localStorage.getItem("refreshToken");
-    console.log("refreshToken recuperado do localStorage:", savedRefreshToken);
-    return savedRefreshToken;
-  });
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    console.log("Token no localStorage:", storedToken);
+    if (storedToken) {
+      setToken(storedToken);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
-  const login = (tokens) => {
-    console.log("login com tokens:", tokens);
-
-    localStorage.setItem("authToken", tokens.access);
-    localStorage.setItem("refreshToken", tokens.refresh);
-    setToken(tokens.access);
-    setRefreshToken(tokens.refresh);
-    
-    console.log("token access e refresh salvos no localStorage");
+  const login = (newToken) => {
+    console.log("Novo token recebido no login:", newToken);
+    setToken(newToken);
+    setIsAuthenticated(true);
+    localStorage.setItem("authToken", newToken);
   };
 
   const logout = () => {
-    console.log(" fazendo logout"); 
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("refreshToken");
+    console.log("Usuário fez logout, limpando dados.");
+    setIsAuthenticated(false);
     setToken(null);
-    setRefreshToken(null);
-    
-    console.log("tokens removidos do localStorage, estado resetado");
+    localStorage.removeItem("authToken");
   };
 
   return (
-    <AuthContext.Provider value={{ token, refreshToken, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        token,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
