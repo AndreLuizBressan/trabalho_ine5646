@@ -37,5 +37,6 @@ class UserUpdateSerializer(serializers.Serializer):
         return super().to_internal_value(data)
 
 class UserInfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     email = serializers.EmailField()
     name = serializers.CharField(required=True)
