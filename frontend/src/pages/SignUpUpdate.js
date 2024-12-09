@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Container, Typography, TextField, Button, Box, Paper, Link } from "@mui/material";
+import React, { useState } from "react";
+import { Container, Typography, TextField, Button, Box, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
 
 const SignupUpdate = () => {
-  const { isAuthenticated } = useAuth(); 
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
+    oldPassword: "",
     password: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [confirmPassword, setConfirmPassword] = useState("");
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
@@ -24,67 +29,44 @@ const SignupUpdate = () => {
     }
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password && formData.password !== confirmPassword) {
+      alert("As senhas não coincidem!");
       return;
     }
 
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("", { //endpoint
-          method: "GET",
+    try {
+      const payload = {
+        name: formData.name || undefined, // Enviar apenas se houver alteração no nome
+        old_password: formData.oldPassword || undefined, // Campo obrigatório para validar a alteração
+        new_password: formData.password || undefined, // Nova senha definida pelo usuário
+      };
+
+      const response = await fetch(
+        "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/users/update/",
+        {
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro ao buscar dados");
+          body: JSON.stringify(payload),
         }
-
-        const data = await response.json();
-        setFormData({
-          name: data.name || "",
-          password: data.password || "",
-        });
-      } catch (err) {
-        console.error(err.message);
-        alert("Erro ao carregar os dados do usuário: " + err.message);
-      }
-    };
-
-    fetchUserData();
-  }, [isAuthenticated, navigate]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("", { //endpoint
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      );
 
       if (!response.ok) {
-        throw new Error("Erro ao atualizar os dados.");
+        const errorText = await response.text();
+        console.error("Resposta inesperada do servidor:", errorText);
+        throw new Error(`Erro do servidor: ${response.status} - ${response.statusText}`);
       }
 
       const data = await response.json();
       alert("Dados atualizados com sucesso!");
       navigate("/main");
     } catch (err) {
-      console.error(err.message);
+      console.error("Erro no fetch:", err.message);
       alert("Erro ao atualizar cadastro: " + err.message);
     }
   };
@@ -106,29 +88,37 @@ const SignupUpdate = () => {
             variant="outlined"
             margin="normal"
             fullWidth
-            required
             name="name"
             value={formData.name}
             onChange={handleChange}
           />
           <TextField
-            label="Senha"
-            type="email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            required
-            name="Senha"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Confirmar senha"
+            label="Senha antiga"
             type="password"
             variant="outlined"
             fullWidth
             margin="normal"
             required
+            name="oldPassword"
+            value={formData.oldPassword}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Nova senha"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Confirmar nova senha"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
             error={!!error}
@@ -144,7 +134,6 @@ const SignupUpdate = () => {
             Atualizar
           </Button>
         </Box>
-    
       </Paper>
     </Container>
   );
