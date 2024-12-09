@@ -39,7 +39,7 @@ const Signup = () => {
     if (!error && formData.password && confirmPassword) {
       try {
         console.log("JSON enviado para o backend:", JSON.stringify(formData));
-        const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/users/register/", {
+        const response = await fetch("http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/users/register/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const Signup = () => {
 
         const data = await response.json();
         login(data);
-        navigate("/main");
+        navigate("/login");
       } catch (err) {
         console.error(err.message);
         alert("Erro ao cadastrar: " + err.message);
@@ -147,3 +147,4 @@ const Signup = () => {
 };
 
 export default Signup;
+

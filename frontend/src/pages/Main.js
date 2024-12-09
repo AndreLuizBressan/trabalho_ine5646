@@ -9,22 +9,21 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useItinerary } from "../context/ItineraryContext";
+import { useAuth } from "../context/AuthContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ItineraryModal from "../components/ItineraryModal";
-import { useAuth } from "../context/AuthContext";
 
 const Main = () => {
   const navigate = useNavigate();
-  const { deleteItinerary } = useItinerary();
   const { token, logout } = useAuth();
 
-  const [itineraries, setItineraries] = useState([]); // Inicializado como array vazio
+  const [itineraries, setItineraries] = useState([]);
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [itineraryDetails, setItineraryDetails] = useState([]);
 
   const searchItineraries = async () => {
     setLoading(true);
@@ -32,7 +31,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        "http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "GET",
           headers: {
@@ -49,14 +48,51 @@ const Main = () => {
       }
 
       const data = await response.json();
-
-      // Garante que a resposta é um array
       setItineraries(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Erro ao buscar itinerários:", err);
       setError(err.message || "Erro ao buscar itinerários. Tente novamente.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteItinerary = async (itineraryId) => {
+    if (!token) {
+      alert("Token inválido ou sessão expirada");
+      logout();
+      navigate("/login");
+      return;
+    }
+
+    try {
+      // Excluir o itinerário
+      const response = await fetch(
+        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Erro ao excluir itinerário:", errorText);
+        throw new Error("Falha ao excluir o itinerário. Tente novamente.");
+      }
+
+      // Atualize a lista local de itinerários
+      setItineraries((prevItineraries) =>
+        prevItineraries.filter((item) => item.id !== itineraryId)
+      );
+
+      alert("Itinerário excluído com sucesso!");
+    } catch (err) {
+      console.error("Erro ao excluir itinerário:", err.message || err);
+      setError(err.message || "Erro ao excluir itinerário. Tente novamente.");
     }
   };
 
@@ -73,7 +109,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        `http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
+        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
         {
           method: "GET",
           headers: {
@@ -90,8 +126,8 @@ const Main = () => {
       }
 
       const data = await response.json();
-      console.log("Dados recebidos do banco:", data);
-      setSelectedItinerary(data); // Atualiza o modal com o itinerário selecionado
+      setSelectedItinerary(data);
+      fetchAdditionalItineraryDetails(id); // Chamada para buscar itens adicionais do itinerário
       setModalOpen(true);
     } catch (err) {
       console.error("Erro ao buscar itinerário:", err);
@@ -101,9 +137,42 @@ const Main = () => {
     }
   };
 
+  const fetchAdditionalItineraryDetails = async (itineraryId) => {
+    try {
+      const response = await fetch(
+        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Erro ao buscar itens do itinerário:", errorText);
+        throw new Error("Erro ao buscar itens do itinerário.");
+      }
+
+      const data = await response.json();
+
+      // Filtra os itens correspondentes ao itinerário selecionado
+      const filteredItems = data.filter(
+        (item) => item.itinerary === itineraryId
+      );
+
+      setItineraryDetails(filteredItems);
+    } catch (err) {
+      console.error("Erro ao buscar itens do itinerário:", err);
+      setError(err.message || "Erro ao buscar itens do itinerário.");
+    }
+  };
+
   useEffect(() => {
     searchItineraries();
-  }, []); // Executa ao montar o componente
+  }, []);
 
   const handleOpenModal = (itinerary) => {
     fetchItineraryDetails(itinerary.id);
@@ -112,6 +181,7 @@ const Main = () => {
   const handleCloseModal = () => {
     setSelectedItinerary(null);
     setModalOpen(false);
+    setItineraryDetails([]); // Reseta os detalhes ao fechar o modal
   };
 
   return (
@@ -133,7 +203,7 @@ const Main = () => {
           variant="contained"
           color="secondary"
           onClick={() => navigate("/create")}
-          sx={{ mb: 4, width: "300px", height: "3 0px", fontSize: "1.2rem" }}
+          sx={{ mb: 4, width: "300px", height: "30px", fontSize: "1.2rem" }}
         >
           Criar Novo Roteiro
         </Button>
@@ -187,7 +257,7 @@ const Main = () => {
                     </IconButton>
                     <IconButton
                       color="error"
-                      onClick={() => deleteItinerary(item.id)}
+                      onClick={() => handleDeleteItinerary(item.id)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -203,9 +273,12 @@ const Main = () => {
         open={modalOpen}
         onClose={handleCloseModal}
         itinerary={selectedItinerary}
+        details={itineraryDetails} // Passa os detalhes do itinerário para o modal
       />
     </Box>
   );
 };
 
 export default Main;
+
+

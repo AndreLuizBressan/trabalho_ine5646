@@ -8,10 +8,7 @@ import { differenceInDays } from "date-fns";
 import { useAuth } from "../context/AuthContext";
 
 const CreateItinerary = () => {
-  // const { token } = useAuth();
-  const { token, logout } = useAuth(); // Hook chamado no início do componente
-  // const { storedToken } = useAuth
-  // const { logout } = useAuth();
+  const { token, logout } = useAuth();
   const [newItinerary, setNewItinerary] = useState({
     title: "",
     description: "",
@@ -27,6 +24,7 @@ const CreateItinerary = () => {
     destination: "",
     accommodation: "",
     activities: "",
+    actions: "",
   });
 
   const [lastDestination, setLastDestination] = useState({
@@ -101,6 +99,7 @@ const CreateItinerary = () => {
         destination: "",
         accommodation: "",
         activities: "",
+        actions: "",
       });
     } else {
       alert("Preencha os campos e selecione um dia.");
@@ -134,22 +133,23 @@ const CreateItinerary = () => {
 
   const handleSaveFinal = async () => {
     const authToken = token || localStorage.getItem("authToken");
-  
+
     if (!authToken) {
       alert("Token inválido ou sessão expirada");
       logout();
       navigate("/login");
       return;
     }
-  
+
     setLoading(true);
-  
+
     const startDateFormatted = newItinerary.startDate.toISOString().split("T")[0];
     const endDateFormatted = newItinerary.endDate.toISOString().split("T")[0];
-  
+
     try {
-      const response = await fetch(
-        "http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+      // Primeira requisição: Criar o itinerário
+      const itineraryResponse = await fetch(
+        "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "POST",
           headers: {
@@ -164,22 +164,57 @@ const CreateItinerary = () => {
           }),
         }
       );
-  
-      if (response.status === 401) {
+
+      if (itineraryResponse.status === 401) {
         alert("Sessão expirada. Faça login de novo.");
         logout();
         navigate("/login");
         return;
       }
-  
-      if (!response.ok) {
-        const errorText = await response.text();
+
+      if (!itineraryResponse.ok) {
+        const errorText = await itineraryResponse.text();
         console.error("Resposta do servidor:", errorText);
         throw new Error("Erro ao criar o itinerário.");
       }
-  
-      const data = await response.json();
-      console.log("Itinerário criado com sucesso:", data);
+
+      const itineraryData = await itineraryResponse.json();
+      const itineraryId = itineraryData.id;
+
+      console.log("Itinerário criado com sucesso:", itineraryData);
+
+      // Segunda requisição: Enviar todos os destinos
+      const saveDestinations = destinations.map(async (destination) => {
+        const destinationResponse = await fetch(
+          "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              day: destination.day,
+              destination: destination.destination,
+              accommodation: destination.accommodation,
+              activities: destination.activities,
+              actions: destination.actions || "No actions provided",
+              itinerary: itineraryId,
+            }),
+          }
+        );
+
+        if (!destinationResponse.ok) {
+          const errorText = await destinationResponse.text();
+          console.error("Erro ao salvar destino:", errorText);
+          throw new Error("Erro ao salvar os destinos no itinerário.");
+        }
+
+        console.log("Destino salvo com sucesso:", await destinationResponse.json());
+      });
+
+      await Promise.all(saveDestinations);
+
       navigate("/main");
     } catch (err) {
       console.error("Erro:", err);
@@ -188,8 +223,6 @@ const CreateItinerary = () => {
       setLoading(false);
     }
   };
-  
-  
 
   const handleBack = () => {
     navigate(-1);
@@ -208,8 +241,7 @@ const CreateItinerary = () => {
           borderRadius: 2,
           position: "relative",
         }}
-      > 
-
+      >
         <Button
           variant="contained"
           color="secondary"
@@ -224,7 +256,6 @@ const CreateItinerary = () => {
           Voltar
         </Button>
 
-        {/* PARTE 1 */}
         <Typography variant="h4" gutterBottom>
           Criar Novo Roteiro
         </Typography>
@@ -235,7 +266,9 @@ const CreateItinerary = () => {
           </Alert>
         )}
 
-        <Typography variant="body2" sx={{ mb: 1 }}>Título do Roteiro</Typography>
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          Título do Roteiro
+        </Typography>
         <TextField
           variant="outlined"
           fullWidth
@@ -245,9 +278,11 @@ const CreateItinerary = () => {
             setNewItinerary((prev) => ({ ...prev, title: e.target.value }))
           }
           sx={{ mb: 3 }}
-/>
+        />
 
-        <Typography variant="body2" sx={{ mb: 1 }}>Descrição da viagem</Typography>
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          Descrição da viagem
+        </Typography>
         <TextField
           variant="outlined"
           fullWidth
@@ -275,7 +310,6 @@ const CreateItinerary = () => {
 
         <Divider sx={{ my: 3 }} />
 
-        {/* PARTE 2 */}
         {partOneCompleted && (
           <>
             <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
@@ -306,7 +340,9 @@ const CreateItinerary = () => {
               Roteiro por dia
             </Typography>
 
-            <Typography variant="body2" sx={{ mb: 1 }}>Dia</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Dia
+            </Typography>
             <TextField
               value={newDestination.day}
               fullWidth
@@ -314,7 +350,9 @@ const CreateItinerary = () => {
               disabled
             />
 
-            <Typography variant="body2" sx={{ mb: 1 }}>Destino</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Destino
+            </Typography>
             <TextField
               value={newDestination.destination}
               onChange={(e) =>
@@ -325,7 +363,9 @@ const CreateItinerary = () => {
               disabled={!partOneCompleted}
             />
 
-            <Typography variant="body2" sx={{ mb: 1 }}>Hospedagem</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Hospedagem
+            </Typography>
             <TextField
               value={newDestination.accommodation}
               onChange={(e) =>
@@ -336,7 +376,9 @@ const CreateItinerary = () => {
               disabled={!partOneCompleted}
             />
 
-            <Typography variant="body2" sx={{ mb: 1 }}>Atividades</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Atividades
+            </Typography>
             <TextField
               value={newDestination.activities}
               onChange={(e) =>
@@ -346,7 +388,18 @@ const CreateItinerary = () => {
               sx={{ mb: 2 }}
               disabled={!partOneCompleted}
             />
-
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Observações importantes
+            </Typography>
+            <TextField
+              value={newDestination.actions}
+              onChange={(e) =>
+                setNewDestination((prev) => ({ ...prev, actions: e.target.value }))
+              }
+              fullWidth
+              sx={{ mb: 2 }}
+              disabled={!partOneCompleted}
+            />
             <Button
               variant="contained"
               color="secondary"
