@@ -22,6 +22,7 @@ const ItineraryTable = ({ destinations, onRemoveDestination, onEditDestination }
         <TableCell>Destino</TableCell>
         <TableCell>Hospedagem</TableCell>
         <TableCell>Atividades</TableCell>
+        <TableCell>Observações</TableCell>
         <TableCell align="center">Ações</TableCell>
       </TableRow>
       </TableHead>
@@ -32,6 +33,7 @@ const ItineraryTable = ({ destinations, onRemoveDestination, onEditDestination }
               <TableCell>{destination.destination}</TableCell>
               <TableCell>{destination.accommodation}</TableCell>
               <TableCell>{destination.activities}</TableCell>
+              <TableCell>{destination.actions}</TableCell>
               <TableCell align="center">
                 <Button
                   color="inherit" // Cor cinza
