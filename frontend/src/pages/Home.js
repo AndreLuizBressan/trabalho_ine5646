@@ -6,10 +6,12 @@ import wallpaper from "../images/wallpaper.jpg";
 const Main = () => {
   const navigate = useNavigate();
 
+  // Redirecina para a pagina de cadastro
   const handleClick = () => {
     navigate("/signup");
   };
 
+  // Interface
   return (
     <div
       style={{
@@ -59,7 +61,7 @@ const Main = () => {
         </Button>
       </Box>
 
-      {/* Rodapé fixado no final */}
+      {/* Rodapé*/}
       <Box
         sx={{
           backgroundColor: "cobalto_claro.main",

@@ -12,13 +12,17 @@ const Login = () => {
   });
   const [error, setError] = useState("");
 
+  // Lógica para atualização do form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Integração com backend
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Não recarregar pag. ao enviar o form
+
+    // Envia req POST para o endpoint de login
     try {
       const response = await fetch("http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/authentication/token/", {
         method: "POST",
@@ -31,23 +35,28 @@ const Login = () => {
       if (!response.ok) {
         throw new Error("E-mail ou senha inválidos.");
       }
-  
+      
+      // Converte resposta em JSON
       const data = await response.json();
       console.log("Login realizado:", data);
       
+      // Salva token acess no contexto e armazena o token refresh localmente
       if (data.access) {
         login(data.access);
         localStorage.setItem("refreshToken", data.refresh); 
       } else {
         throw new Error("Erro ao obter o token de acesso.");
       }
-  
+      
+      // Redireciona para main após log
       navigate("/main");
     } catch (err) {
       console.error(err.message);
       setError(err.message || "Erro ao realizar login. Tente novamente.");
     }
   };
+  
+  //Interface
   return (
       <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>

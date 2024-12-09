@@ -14,11 +14,13 @@ const SignupUpdate = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Atualização do formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Verificação de coincidencia das senhas
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
     setConfirmPassword(value);
@@ -29,21 +31,24 @@ const SignupUpdate = () => {
     }
   };
 
+  // Envio de dados atualizados para o servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (formData.password && formData.password !== confirmPassword) {
       alert("As senhas não coincidem!");
       return;
     }
 
     try {
+      // Preparacao de dados para envio ao servidor
       const payload = {
-        name: formData.name || undefined, // Enviar apenas se houver alteração no nome
-        old_password: formData.oldPassword || undefined, // Campo obrigatório para validar a alteração
-        new_password: formData.password || undefined, // Nova senha definida pelo usuário
+        name: formData.name || undefined, 
+        old_password: formData.oldPassword || undefined, 
+        new_password: formData.password || undefined,
       };
 
+      // Req PATCH para atualização de dados de cadastro
       const response = await fetch(
         "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/users/update/",
         {
@@ -71,6 +76,7 @@ const SignupUpdate = () => {
     }
   };
 
+  // Interface
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>

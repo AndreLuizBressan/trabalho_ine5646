@@ -41,6 +41,7 @@ const CreateItinerary = () => {
   const navigate = useNavigate();
   const { addItinerary } = useItinerary();
 
+  // Cálculo de dias da viagem
   const calculateDays = () => {
     if (newItinerary.startDate && newItinerary.endDate) {
       const days = differenceInDays(
@@ -72,6 +73,7 @@ const CreateItinerary = () => {
     }
   }, [newItinerary.day]);
 
+  // Adicionar destino na tabela
   const handleAddDestination = () => {
     if (newDestination.day && newDestination.destination) {
       if (editIndex !== null) {
@@ -106,17 +108,20 @@ const CreateItinerary = () => {
     }
   };
 
+  // Editar destino na tabela
   const handleEditDestination = (index) => {
     setNewDestination(destinations[index]);
     setEditIndex(index);
   };
 
+  // Remover destino da tabela
   const handleRemoveDestination = (index) => {
     const dayRemoved = destinations[index].day;
     setDestinations((prev) => prev.filter((_, i) => i !== index));
     setUsedDays((prev) => prev.filter((d) => d !== dayRemoved));
   };
 
+  // Salvar primeira parte da tabela
   const handleSavePart1 = () => {
     if (
       newItinerary.title.trim() &&
@@ -131,6 +136,7 @@ const CreateItinerary = () => {
     }
   };
   
+  // Integração com backend
   const handleSaveFinal = async () => {
     const authToken = token || localStorage.getItem("authToken");
 
@@ -146,6 +152,7 @@ const CreateItinerary = () => {
     const startDateFormatted = newItinerary.startDate.toISOString().split("T")[0];
     const endDateFormatted = newItinerary.endDate.toISOString().split("T")[0];
 
+    // Req para salvar o itinerario
     try {
       const itineraryResponse = await fetch(
         "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
@@ -182,6 +189,7 @@ const CreateItinerary = () => {
 
       console.log("Itinerário criado com sucesso:", itineraryData);
 
+      // Req para salvar destino na tabela
       const saveDestinations = destinations.map(async (destination) => {
         const destinationResponse = await fetch(
           "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
@@ -222,13 +230,16 @@ const CreateItinerary = () => {
     }
   };
 
+  // Lógica para voltar
   const handleBack = () => {
     navigate(-1);
   };
 
+  // Lógica para seleção de dias do itinerário
   const availableDays = Array.from({ length: daysBetween }, (_, i) => i + 1);
   const filteredDays = availableDays.filter((d) => !usedDays.includes(d));
 
+  // Interface
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Box

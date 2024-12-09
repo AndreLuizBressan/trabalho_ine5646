@@ -14,7 +14,7 @@ const Signup = () => {
   const navigate = useNavigate(); 
   const { login } = useAuth()
 
-
+  // Atualização do formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -24,6 +24,7 @@ const Signup = () => {
     });
   };
 
+  // Verificar coincidência de senhas
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
     setConfirmPassword(value);
@@ -34,11 +35,14 @@ const Signup = () => {
     }
   };
 
+  // Envio do form para o backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!error && formData.password && confirmPassword) {
       try {
         console.log("JSON enviado para o backend:", JSON.stringify(formData));
+
+        // Envia os dados para a API
         const response = await fetch("http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/users/register/", {
           method: "POST",
           headers: {
@@ -61,6 +65,7 @@ const Signup = () => {
     }
   };
 
+  // Interface
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>

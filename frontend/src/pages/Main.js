@@ -17,7 +17,8 @@ import ItineraryModal from "../components/ItineraryModal";
 const Main = () => {
   const navigate = useNavigate();
   const { token, logout } = useAuth();
-
+  
+  // Definicao de estados locais
   const [itineraries, setItineraries] = useState([]);
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,18 +26,20 @@ const Main = () => {
   const [error, setError] = useState(null);
   const [itineraryDetails, setItineraryDetails] = useState([]);
 
+  // Buscar itinerários
   const searchItineraries = async () => {
     setLoading(true);
     setError(null);
 
     try {
+      // Req GET para obter dados do itinerário
       const response = await fetch(
         "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // token para autorização
           },
         }
       );
@@ -47,6 +50,7 @@ const Main = () => {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
 
+      // Armazena itinerarios no estado
       const data = await response.json();
       setItineraries(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -57,7 +61,9 @@ const Main = () => {
     }
   };
 
+  // Excluir itinerário
   const handleDeleteItinerary = async (itineraryId) => {
+    //Validação do token
     if (!token) {
       alert("Token inválido ou sessão expirada");
       logout();
@@ -66,6 +72,7 @@ const Main = () => {
     }
 
     try {
+      //  Req DELETE para excluir itinerario 
       const response = await fetch(
         `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
         {
@@ -83,7 +90,7 @@ const Main = () => {
         throw new Error("Falha ao excluir o itinerário. Tente novamente.");
       }
 
-      // Atualize a lista local de itinerários
+      // Atualiza a lista local de itinerários
       setItineraries((prevItineraries) =>
         prevItineraries.filter((item) => item.id !== itineraryId)
       );
@@ -95,7 +102,9 @@ const Main = () => {
     }
   };
 
+  // Buscar dados da parte 1 do itinerário
   const fetchItineraryDetails = async (id) => {
+    // Validação do token
     if (!token) {
       alert("Token inválido ou sessão expirada");
       logout();
@@ -107,6 +116,7 @@ const Main = () => {
     setError(null);
 
     try {
+      // Req GET para obter dados
       const response = await fetch(
         `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
         {
@@ -123,7 +133,7 @@ const Main = () => {
         console.error("Erro ao buscar detalhes do itinerário:", errorText);
         throw new Error("Erro ao buscar detalhes do itinerário.");
       }
-
+      // Armazena e chama os dados da parte 2 e abre o modal
       const data = await response.json();
       setSelectedItinerary(data);
       fetchAdditionalItineraryDetails(id); 
@@ -136,8 +146,10 @@ const Main = () => {
     }
   };
 
+  // Buscar dados da parte 2 do itinerário
   const fetchAdditionalItineraryDetails = async (itineraryId) => {
     try {
+      // Req GET para obter dados
       const response = await fetch(
         `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
         {
@@ -169,20 +181,24 @@ const Main = () => {
     }
   };
 
+  // Carregar itinerários quando o componente for montado
   useEffect(() => {
     searchItineraries();
   }, []);
 
+  // Abrir modal
   const handleOpenModal = (itinerary) => {
     fetchItineraryDetails(itinerary.id);
   };
 
+  // Fechar modal
   const handleCloseModal = () => {
     setSelectedItinerary(null);
     setModalOpen(false);
     setItineraryDetails([]);
   };
 
+  // Interface
   return (
     <Box sx={{ bgcolor: "#f9f9f9", minHeight: "100vh" }}>
       <Box
