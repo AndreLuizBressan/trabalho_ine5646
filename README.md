@@ -2,7 +2,8 @@
 Trabalho de Desenvolvimento Web - INE5646
 
 *Breve descrição dos trabalhos*
-Criação e compartilhamento de roteiros de viagem, focado em uma experiência colaborativa. Usuários podem planejar viagens, criar itinerários personalizados e compartilhar as informações com amigos ou familiares para construir roteiros em grupo. O diferencial é a colaboração em tempo real, permitindo que todos os participantes contribuam com sugestões e informações, como pontos turísticos, restaurantes e horários.
+Criação de roteiros de viagem focados em uma experiência personalizada. Usuários podem planejar viagens, criar itinerários adaptados às suas preferências e organizar informações como pontos turísticos, restaurantes e hospedagem.
+
 
 *Stack Utilizada*
 Front-end: react;
