@@ -11,7 +11,7 @@ import {
   Typography
 } from "@mui/material";
 
-
+// tabela com a descricao do itinerario 
 const ItineraryTable = ({ destinations, onRemoveDestination, onEditDestination }) => {
   return (
     <TableContainer component={Paper}>

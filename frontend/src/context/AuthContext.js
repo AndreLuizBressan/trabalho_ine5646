@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
+//autorizacao de usuarios - verifica o token recebido para autenticar o usuario
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
