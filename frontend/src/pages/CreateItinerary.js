@@ -148,7 +148,7 @@ const CreateItinerary = () => {
 
     try {
       const itineraryResponse = await fetch(
-        "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "POST",
           headers: {
@@ -184,7 +184,7 @@ const CreateItinerary = () => {
 
       const saveDestinations = destinations.map(async (destination) => {
         const destinationResponse = await fetch(
-          "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
+          "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
           {
             method: "POST",
             headers: {

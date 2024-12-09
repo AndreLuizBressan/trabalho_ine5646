@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/authentication/token/", {
+      const response = await fetch("http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/authentication/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

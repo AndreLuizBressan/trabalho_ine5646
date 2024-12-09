@@ -31,7 +31,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        "http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "GET",
           headers: {
@@ -66,9 +66,8 @@ const Main = () => {
     }
 
     try {
-      // Excluir o itinerário
       const response = await fetch(
-        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
+        `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
         {
           method: "DELETE",
           headers: {
@@ -109,7 +108,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
+        `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
         {
           method: "GET",
           headers: {
@@ -127,7 +126,7 @@ const Main = () => {
 
       const data = await response.json();
       setSelectedItinerary(data);
-      fetchAdditionalItineraryDetails(id); // Chamada para buscar itens adicionais do itinerário
+      fetchAdditionalItineraryDetails(id); 
       setModalOpen(true);
     } catch (err) {
       console.error("Erro ao buscar itinerário:", err);
@@ -140,7 +139,7 @@ const Main = () => {
   const fetchAdditionalItineraryDetails = async (itineraryId) => {
     try {
       const response = await fetch(
-        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
+        `http://ec2-18-212-51-108.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
         {
           method: "GET",
           headers: {
