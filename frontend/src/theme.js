@@ -51,9 +51,9 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          transition: "transform 0.3s ease", // Suaviza o efeito de transformação
+          transition: "transform 0.3s ease",
           "&:hover": {
-            transform: "scale(1.1)", // Aumenta o botão em 10% ao passar o mouse
+            transform: "scale(1.1)",
           },
         },
       },

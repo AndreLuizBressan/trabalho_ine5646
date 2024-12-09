@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-//autorizacao de usuarios - verifica o token recebido para autenticar o usuario
+
+
+// Contexto de autenticacao de usuarios
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -7,14 +9,18 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
+    // Recupera o token armazenado localmente
     const storedToken = localStorage.getItem("authToken");
     console.log("Token no localStorage:", storedToken);
+
+    // Usuario autentica se o token for encontrado no localStorage
     if (storedToken) {
       setToken(storedToken);
       setIsAuthenticated(true);
     }
   }, []);
-
+  
+  // Marca usuario como autenticado e guarda o token
   const login = (newToken) => {
     console.log("Novo token recebido no login:", newToken);
     setToken(newToken);
@@ -22,6 +28,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("authToken", newToken);
   };
 
+  // Marca usuario como não autenticado e remove o token do estado
   const logout = () => {
     console.log("Usuário fez logout, limpando dados.");
     setIsAuthenticated(false);
