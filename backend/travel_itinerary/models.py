@@ -37,3 +37,8 @@ class ItineraryInvites(models.Model):
     updated_at = models.DateTimeField("Updated at", auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     itinerary = models.ForeignKey(TravelItinerary, on_delete=models.CASCADE)
+
+    def get_owner(self):
+        owner_id = self.itinerary.owner_id
+        owner = User.objects.filter(id=owner_id).first()
+        return owner

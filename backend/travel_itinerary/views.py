@@ -1,9 +1,9 @@
 from travel_itinerary.models import TravelItinerary, ItineraryItems, ItineraryInvites
-from travel_itinerary.serializers import TravelItinerarySerializer, ItineraryItemsSerializer, ItineraryInvitesSerializer
+from travel_itinerary.serializers import TravelItinerarySerializer, ItineraryItemsSerializer, ItineraryInvitesSerializer, ItineratyInvitesFullInformationSerializer
 from users.mixins import ExtractUserIdMixin
 
 from rest_framework import status
-from rest_framework.mixins import CreateModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -34,7 +34,6 @@ class ItineraryInviteView(CreateModelMixin, GenericViewSet, ExtractUserIdMixin):
     serializer_class = ItineraryInvitesSerializer
 
     def check_itinerary_ownership(self, itinerary_id):
-        print(itinerary_id, type(itinerary_id))
         is_owner = TravelItinerary.objects.filter(id=itinerary_id, owner_id=self.user_id).exists()
         return is_owner
 
@@ -49,3 +48,11 @@ class ItineraryInviteView(CreateModelMixin, GenericViewSet, ExtractUserIdMixin):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+class InvitedItinerariesView(GenericViewSet, ListModelMixin, ExtractUserIdMixin):
+    queryset = ItineraryInvites.objects.all().order_by("-id")
+    serializer_class = ItineratyInvitesFullInformationSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(user_id=self.user_id)
+        return queryset

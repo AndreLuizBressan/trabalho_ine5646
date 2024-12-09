@@ -1,4 +1,6 @@
 from travel_itinerary.models import TravelItinerary, ItineraryItems, ItineraryInvites
+from users.serializers import UserModelSerializer
+
 from rest_framework.serializers import ModelSerializer, ValidationError
 
 class ItineraryItemsSerializer(ModelSerializer):
@@ -25,3 +27,10 @@ class ItineraryInvitesSerializer(ModelSerializer):
     class Meta:
         model = ItineraryInvites
         fields = "__all__"
+
+class ItineratyInvitesFullInformationSerializer(ModelSerializer):
+    owner = UserModelSerializer(source="get_owner")
+    itinerary = TravelItinerarySerializer()
+    class Meta:
+        model = ItineraryInvites
+        fields = ["owner", "itinerary", "created_at", "updated_at"]
