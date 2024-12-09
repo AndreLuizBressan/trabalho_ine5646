@@ -40,3 +40,9 @@ class UserInfoSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     email = serializers.EmailField()
     name = serializers.CharField(required=True)
+
+class UserModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "name", "email"]
