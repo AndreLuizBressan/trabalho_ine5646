@@ -44,7 +44,7 @@ const Main = () => {
           Explore o Mundo com Roteiros Incríveis
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Descubra os melhores destinos e crie memórias para a vida!
+          Viaje sem complicações, planeje com perfeição!
         </Typography>
         <Button
           variant="contained"
