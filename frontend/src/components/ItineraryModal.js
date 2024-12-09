@@ -9,6 +9,12 @@ import {
   Box,
 } from "@mui/material";
 
+// Formatação de data
+const formatDate = (dateString) => {
+  if (!dateString) return "Não disponível";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
 const ItineraryModal = ({ open, onClose, itinerary, details }) => {
   if (!itinerary) return null;
 
@@ -29,8 +35,8 @@ const ItineraryModal = ({ open, onClose, itinerary, details }) => {
             Datas
           </Typography>
           <Typography variant="body1">
-            Início: {itinerary.start_date || "Não disponível"} <br />
-            Fim: {itinerary.end_date || "Não disponível"}
+            Início: {formatDate(itinerary.start_date)} <br />
+            Fim: {formatDate(itinerary.end_date)}
           </Typography>
         </Box>
         <Box mt={2}>
@@ -43,7 +49,7 @@ const ItineraryModal = ({ open, onClose, itinerary, details }) => {
                 {`Dia ${detail.day}: Destino: ${detail.destination || "Não especificado"}, `}
                 {`Hospedagem: ${detail.accommodation || "Sem hospedagem"}, `}
                 {`Atividades: ${detail.activities || "Sem atividades"}, `}
-                {`Ações: ${detail.actions || "Sem ações"}`}
+                {`Observações: ${detail.actions || "Sem observações"}`}
               </Typography>
             ))
           ) : (

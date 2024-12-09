@@ -130,7 +130,7 @@ const CreateItinerary = () => {
       alert("Preencha todos os campos");
     }
   };
-
+  
   const handleSaveFinal = async () => {
     const authToken = token || localStorage.getItem("authToken");
 
