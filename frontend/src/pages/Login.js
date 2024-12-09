@@ -17,34 +17,10 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await fetch("http://ec2-18-204-194-234.compute-1.amazonaws.com:8000/authentication/token/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(credentials),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("E-mail ou senha inválidos.");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Login realizado:", data);
-  //     login(data.acess);
-  //     navigate("/main");
-  //   } catch (err) {
-  //     setError(err.message || "Erro ao realizar login. Tente novamente.");
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/authentication/token/", {
+      const response = await fetch("http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/authentication/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +44,7 @@ const Login = () => {
   
       navigate("/main");
     } catch (err) {
-      console.error(err.message); // Debug: Mostra qualquer erro ocorrido
+      console.error(err.message);
       setError(err.message || "Erro ao realizar login. Tente novamente.");
     }
   };

@@ -31,7 +31,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "GET",
           headers: {
@@ -68,7 +68,7 @@ const Main = () => {
     try {
       // Excluir o itinerário
       const response = await fetch(
-        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
+        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${itineraryId}/`,
         {
           method: "DELETE",
           headers: {
@@ -109,7 +109,7 @@ const Main = () => {
 
     try {
       const response = await fetch(
-        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
+        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/${id}`,
         {
           method: "GET",
           headers: {
@@ -140,7 +140,7 @@ const Main = () => {
   const fetchAdditionalItineraryDetails = async (itineraryId) => {
     try {
       const response = await fetch(
-        `http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
+        `http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/`,
         {
           method: "GET",
           headers: {
@@ -181,7 +181,7 @@ const Main = () => {
   const handleCloseModal = () => {
     setSelectedItinerary(null);
     setModalOpen(false);
-    setItineraryDetails([]); // Reseta os detalhes ao fechar o modal
+    setItineraryDetails([]);
   };
 
   return (
@@ -273,7 +273,7 @@ const Main = () => {
         open={modalOpen}
         onClose={handleCloseModal}
         itinerary={selectedItinerary}
-        details={itineraryDetails} // Passa os detalhes do itinerário para o modal
+        details={itineraryDetails}
       />
     </Box>
   );

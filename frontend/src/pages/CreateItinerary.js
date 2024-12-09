@@ -147,9 +147,8 @@ const CreateItinerary = () => {
     const endDateFormatted = newItinerary.endDate.toISOString().split("T")[0];
 
     try {
-      // Primeira requisição: Criar o itinerário
       const itineraryResponse = await fetch(
-        "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
+        "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/my_itineraries/",
         {
           method: "POST",
           headers: {
@@ -183,10 +182,9 @@ const CreateItinerary = () => {
 
       console.log("Itinerário criado com sucesso:", itineraryData);
 
-      // Segunda requisição: Enviar todos os destinos
       const saveDestinations = destinations.map(async (destination) => {
         const destinationResponse = await fetch(
-          "http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
+          "http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/travel_itinerary/itinerary_items/",
           {
             method: "POST",
             headers: {

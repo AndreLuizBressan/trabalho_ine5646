@@ -39,7 +39,7 @@ const Signup = () => {
     if (!error && formData.password && confirmPassword) {
       try {
         console.log("JSON enviado para o backend:", JSON.stringify(formData));
-        const response = await fetch("http://ec2-18-206-124-104.compute-1.amazonaws.com:8000/users/register/", {
+        const response = await fetch("http://ec2-54-210-53-126.compute-1.amazonaws.com:8000/users/register/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

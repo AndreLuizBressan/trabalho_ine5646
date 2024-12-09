@@ -15,12 +15,12 @@ const Main = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh", // Exatamente a altura da tela
+        height: "100vh",
         backgroundColor: "#ffffff",
-        overflow: "hidden", // Evita qualquer rolagem extra
+        overflow: "hidden",
       }}
     >
-      {/* Imagem como banner */}
+
       <Box
         sx={{
           height: "60vh",
@@ -32,10 +32,10 @@ const Main = () => {
       <Box
         sx={{
           textAlign: "center",
-          py: 6, // Margem interna moderada
+          py: 6, 
           backgroundColor: "Quinary",
           color: "#003366",
-          flexGrow: 1, // Ajusta o restante do espaço
+          flexGrow: 1, 
         }}
       >
         <Typography variant="h4" gutterBottom>
